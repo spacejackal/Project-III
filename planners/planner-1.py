@@ -262,6 +262,8 @@ def hurst(current, end, pursuer):
 
 
 class PlannerAgent:
+    directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
+    
     
     def __init__(self):
         pass
@@ -286,6 +288,8 @@ class PlannerAgent:
         
         directions = np.array([[0,0], [-1, 0], [1, 0], [0, -1], [0, 1],
                                    [-1, -1], [-1, 1], [1, -1], [1, 1]]) 
+        
+        directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
           
         target = pursued
 
