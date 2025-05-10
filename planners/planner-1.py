@@ -207,10 +207,13 @@ def backValue(node: MimiNode):
 
 def AnotherAnotherStar(grid, start, end, avoid):
     rows, cols = len(grid), len(grid[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1), (0,0)]
+    directions = [(0,1),(1,1),(1,0),(-1,1),(-1,0),(-1,-1),(0,-1),(1,-1), (0,0)]
+    directions2 = [(0,1),(1,1),(1,0),(-1,1),(-1,0),(-1,-1),(0,-1),(1,-1)]
     
     pathWeight = {start: 0}
+    realPathWeight = {start: 0}
     parent = {start: None}
+    
 
     open = [start]
 
@@ -218,24 +221,47 @@ def AnotherAnotherStar(grid, start, end, avoid):
     while not found and len(open) > 0:
         node = None
         for newNode in open:
-            if node is None or pathWeight[newNode] <= pathWeight[node]:
+            if node is None or realPathWeight[newNode] <= realPathWeight[node]:
                 node = newNode
-        
+        nodeVal = {}
         open.remove(node)
 
         for dir in directions:
             newNode = (node[0] + dir[0], node[1] + dir[1])
             #distToEnd = (abs(newNode[0] - end[0]), abs(newNode[1] - end[1]))
             #distToEnd = (hurst(newNode, end,avoid))
-            if 0 <= newNode[0] < rows and 0 <= newNode[1] < cols and grid[newNode[0]][newNode[1]] == 0 and newNode not in list(pathWeight.keys()):
+            if 0 <= newNode[0] < rows and 0 <= newNode[1] < cols and grid[newNode[0]][newNode[1]] == 0:
                     #pathWeight[newNode] = 1 + pathWeight[node] + distToEnd[0] + distToEnd[1]
                     #pathWeight[newNode] = 1 + pathWeight[node] + distToEnd
-                    pathWeight[newNode] = hurst(newNode, end,avoid) + pathWeight[node] + dist(start, end)
-                    parent[newNode] = node
-                    open.append(newNode)
-                    if newNode == end:
-                        found = True
-                        break
+                    nodeVal[newNode] = hurst(newNode, end,avoid) + dist(start, end)
+                    if newNode not in list(pathWeight.keys()):
+                        parent[newNode] = node
+                        open.append(newNode)
+                    #if newNode == end:
+                        #found = True                 
+        
+        
+        for d in directions2:
+            nodesToCheck = []
+            
+            for i in range(0, 3):
+                newNode = None
+                if(i == 0):
+                    newNode = (node[0] + -d[1], node[1] + d[0])
+                elif(i == 1):
+                    newNode = (node[0] + d[0], node[1] + d[1])
+                else:
+                    newNode = (node[0] + d[1], node[1] + -d[0])
+                nodesToCheck.append(newNode)
+
+            for newNode in nodesToCheck:
+                realPathWeight[newNode] = hurst(newNode, end,avoid) + pathWeight[node] + dist(start, end)
+                parent[newNode] = node
+                open.append(newNode)
+                if newNode == end:
+                            found = True
+             
+             
 
     if found:
             path = []
@@ -263,10 +289,30 @@ def hurst(current, end, pursuer):
 
 class PlannerAgent:
     directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
-    
+    probabiliry = np.array([.3,.3,.3])
+    currentCount = 3
+    directionsMoved = np.array([1,1,1])
+    lastPos = np.array([0,0])
+    lastDir = np.array([0,0])
+
+    def updateProb(self, current: np.ndarray):
+        self.currentCount += 1
+        actualDir = current - self.lastPos
+        if actualDir[0] == self.lastDir[0] and actualDir[1] == self.lastDir[1]:
+            self.directionsMoved[1] += 1
+        elif actualDir[0] == -self.lastDir[1] and actualDir[1] == self.lastDir[0]:
+            self.directionsMoved[0] += 1
+        elif actualDir[0] == self.lastDir[1] and actualDir[1] == -self.lastDir[0]:
+            self.directionsMoved[2] += 1
+        self.probabiliry[0] = self.directionsMoved[0] / self.currentCount
+        self.probabiliry[1] = self.directionsMoved[1] / self.currentCount
+        self.probabiliry[2] = self.directionsMoved[2] / self.currentCount
     
     def __init__(self):
+        lastPos = np.array([0,0])
         pass
+
+
     
     def plan_action(self, world: np.ndarray, current: np.ndarray, pursued: np.ndarray, pursuer: np.ndarray) -> Optional[np.ndarray]:
         """
@@ -290,7 +336,10 @@ class PlannerAgent:
                                    [-1, -1], [-1, 1], [1, -1], [1, 1]]) 
         
         directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
-          
+
+        if self.lastDir[0] != 0 or self.lastDir[1] != 0:
+            self.updateProb(current)
+
         target = pursued
 
         if dist(current, target) > 1.5 and dist(current, pursuer) > 1.5:
