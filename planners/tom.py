@@ -61,7 +61,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
 
     for dir in directions:
         newNode = (node[0] + dir[0], node[1] + dir[1])
-        nodeVal[newNode] = hurst(newNode, end,avoid,rows,cols,grid) + dist(newNode, end)
+        nodeVal[newNode] = hurst2(newNode, end,avoid,rows,cols,grid) + dist(newNode, end)
         if newNode not in list(pathWeight.keys()):
             pathWeight[newNode] = 0
             parent[newNode] = node
@@ -86,7 +86,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
 
 
     for newNode in open:
-        if pathWeight[newNode] <= pathWeight[node]:
+        if pathWeight[newNode] >= pathWeight[node]:
             node = newNode
 
     tupleTemp = tuple([start[0] - node[0], start[1]- node[1]])
@@ -105,6 +105,18 @@ def hurst(current, end, pursuer, rows, cols, grid):
 
 
     return ((1/temp2) *temp)
+
+def hurst2(current, end, pursuer, rows, cols, grid):
+    if tuple(current) == tuple(pursuer) or 0 > current[0] >= rows or 0 > current[1] >= cols or (0 <= current[0] < rows and 0 <= current[1] < cols and grid[current[0]][current[1]] != 0):
+        return 0
+    temp = abs((current[0] - end[0])^2) + abs((current[1] - end[1])^2)
+    temp2 = abs((current[0] - pursuer[0])^2) + abs((current[1] - pursuer[1])^2)
+
+    if temp2 == 0:
+        return 0
+
+
+    return ((1/temp) *temp2)
 
 
 class PlannerAgent:
