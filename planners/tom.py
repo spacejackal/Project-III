@@ -37,166 +37,8 @@ def best_action(root: MimiNode):
         #best_child = min(root.children, key=lambda x: x.value)
         return bestMove
 
-def miniminimini(world, current, pursued, pursuer, maxdepth):
-    root = MimiNode(current, pursued, pursuer)
-    rows, cols = len(world), len(world[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1), (0,0)]
-    depth = 0
-    node = root
-    while depth <= maxdepth:
-
-        our_action = None
-        for dir in directions:
-            newNode = MimiNode(node.current + dir, node.pursued, node.pursuer, depth, node)
-            #distToEnd = (abs(newNode[0] - end[0]), abs(newNode[1] - end[1]))
-            if 0 <= newNode.current[0] < rows and 0 <= newNode.current[1] < cols and world[newNode.current[0]][newNode.current[1]] == 0:
-                newNode.value = hurst(newNode.current, newNode.pursued, newNode.pursuer)
-                #if(our_action is None or newNode.value < our_action.value):
-                our_action = newNode
-            if(our_action is not None):
-                node.children.append(our_action)
-
-        pursued_action = None
-        for ourAction in node.children:
-            for dir in directions:
-                newNode = MimiNode(ourAction.current, ourAction.pursued+dir, ourAction.pursuer, depth, ourAction)
-                if 0 <= newNode.current[0] < rows and 0 <= newNode.current[1] < cols and world[newNode.current[0]][newNode.current[1]] == 0:
-                    newNode.value = hurst(newNode.pursued, newNode.pursuer, newNode.current)
-                    #if(pursued_action is None or newNode.value < pursued_action.value):
-                    pursued_action = newNode
-                if(pursued_action is not None):
-                    ourAction.children.append(pursued_action)
-
-        pursuer_action = None
-        for pursuedAction in our_action.children:
-            for dir in directions:
-                newNode = MimiNode(pursuedAction.current, pursuedAction.pursued, pursuedAction.pursuer+dir, depth, pursuedAction)
-                if 0 <= newNode.current[0] < rows and 0 <= newNode.current[1] < cols and world[newNode.current[0]][newNode.current[1]] == 0:
-                    newNode.value = hurst(newNode.pursuer, newNode.current, newNode.pursued)
-                    if(tuple(newNode.current) == tuple(newNode.pursuer)):
-                        newNode.value = 9999999999999999
-                        newNode.parent.value = 9999999999999999
-                        newNode.parent.parent.value = 9999999999999999
-                        
-                    #if(pursuer_action is None or newNode.value < pursuer_action.value):
-                    pursuer_action = newNode
-                if(pursuer_action is not None):
-                    pursuedAction.children.append(pursuer_action)
-        depth += 1
-        node = pursuer_action
-
-    #backValue(root)
-
-    return root
 
 
-
-def Anotherminiminimini(world, current, pursued, pursuer, maxdepth):
-    root = MimiNode(current, pursued, pursuer)
-    rows, cols = len(world), len(world[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1), (0,0)]
-    depth = 0
-    node = root
-    while depth <= maxdepth:
-
-        for dir in directions:
-            newNode = MimiNode(node.current + dir, node.pursued, node.pursuer, depth, node)
-            if 0 <= newNode.current[0] < rows and 0 <= newNode.current[1] < cols and world[newNode.current[0]][newNode.current[1]] == 0:
-                node.children.append(newNode)
-                for dir in directions:
-                    newNode2 = MimiNode(newNode.current, newNode.pursued+dir, newNode.pursuer, depth, newNode)
-                    if 0 <= newNode2.pursued[0] < rows and 0 <= newNode2.pursued[1] < cols and world[newNode2.pursued[0]][newNode2.pursued[1]] == 0:
-                        newNode.children.append(newNode2)
-                        for dir in directions:
-                            newNode3 = MimiNode(newNode2.current, newNode2.pursued, newNode2.pursuer+dir, depth, newNode2)
-                            if 0 <= newNode3.pursuer[0] < rows and 0 <= newNode3.pursuer[1] < cols and world[newNode3.pursuer[0]][newNode3.pursuer[1]] == 0:
-                                newNode2.children.append(newNode3)
-                                newNode3.value = hurst(newNode3.pursuer, newNode3.current, newNode3.pursued)
-                                
-                                if newNode2.bestChild == None or newNode2.bestChild.value > newNode3.value:
-                                    newNode2.bestChild = newNode3
-                        newNode2.value = hurst(newNode2.bestChild.pursued, newNode2.bestChild.pursuer, newNode2.bestChild.current)
-                        if newNode.bestChild == None or newNode.bestChild.value > newNode2.value:
-                                    newNode.bestChild = newNode2
-                newNode.value = hurst(newNode.bestChild.bestChild.current, newNode.bestChild.bestChild.pursued, newNode.bestChild.bestChild.pursuer)
-                if node.bestChild == None or node.bestChild.value > newNode.value:
-                            node.bestChild = newNode
-
-        depth += 1
-        node =  node.bestChild.bestChild.bestChild
-
-    #backValue(root)
-
-    return root
-
-def AnotherAnotherminiminimini(world, current, pursued, pursuer, maxdepth):
-    root = MimiNode(current, pursued, pursuer)
-    rows, cols = len(world), len(world[0])
-    directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1), (0,0)]
-    depth = 0
-    node = root
-    while depth <= maxdepth:
-
-        for dir in directions:
-            newNode = MimiNode(node.current + dir, node.pursued, node.pursuer, depth, node)
-            if 0 <= newNode.current[0] < rows and 0 <= newNode.current[1] < cols and world[newNode.current[0]][newNode.current[1]] == 0:
-                node.children.append(newNode)
-                for dir in directions:
-                    newNode2 = MimiNode(newNode.current, newNode.pursued+dir, newNode.pursuer, depth, newNode)
-                    if 0 <= newNode2.pursued[0] < rows and 0 <= newNode2.pursued[1] < cols and world[newNode2.pursued[0]][newNode2.pursued[1]] == 0:
-                        newNode.children.append(newNode2)
-                        for dir in directions:
-                            newNode3 = MimiNode(newNode2.current, newNode2.pursued, newNode2.pursuer+dir, depth, newNode2)
-                            if 0 <= newNode3.pursuer[0] < rows and 0 <= newNode3.pursuer[1] < cols and world[newNode3.pursuer[0]][newNode3.pursuer[1]] == 0 :
-                                newNode2.children.append(newNode3)
-                                node3AStar = AnotherAnotherStar(world, tuple(newNode3.pursuer), tuple(newNode3.current), tuple(newNode3.pursued))
-                                if node3AStar is not None:
-                                    newNode3.value = len(node3AStar)
-                                else:
-                                    newNode3.value = 9999999999999999
-                                if newNode2.bestChild == None or newNode2.bestChild.value > newNode3.value:
-                                    newNode2.bestChild = newNode3
-                        node2Astar = AnotherAnotherStar(world, tuple(newNode2.bestChild.pursued), tuple(newNode2.bestChild.pursuer), tuple(newNode2.bestChild.current))
-                        if node2Astar is not None:
-                            newNode2.value = len(node2Astar)
-                        else:
-                            newNode2.value = 9999999999999999
-                        #newNode2.value = len(AnotherAnotherStar(world, tuple(newNode2.bestChild.pursued), tuple(newNode2.bestChild.pursuer), tuple(newNode2.bestChild.current)))
-                        if newNode.bestChild == None or newNode.bestChild.value > newNode2.value:
-                                    newNode.bestChild = newNode2
-                nodeAstar = AnotherAnotherStar(world, tuple(newNode.bestChild.bestChild.current), tuple(newNode.bestChild.bestChild.pursued), tuple(newNode.bestChild.bestChild.pursuer))
-                if nodeAstar is not None:
-                    newNode.value = len(nodeAstar)
-                else:
-                    newNode.value = 9999999999999999
-                #newNode.value = len(AnotherAnotherStar(world, tuple(newNode.bestChild.bestChild.current), tuple(newNode.bestChild.bestChild.pursued), tuple(newNode.bestChild.bestChild.pursuer)))
-                if node.bestChild == None or node.bestChild.value > newNode.value:
-                            node.bestChild = newNode
-
-        depth += 1
-        node =  node.bestChild.bestChild.bestChild
-
-    #backValue(root)
-
-    return root
-
-def getNodeVal(node:MimiNode, i):
-    if not node.children:
-        if(i%3 == 0):
-            return hurst(node.current, node.pursued, node.pursuer,node.cols,node.rows,node.grid)
-        elif(i%3 == 1):
-            return hurst(node.pursued, node.pursuer, node.current,node.cols,node.rows,node.grid)
-        else:
-            return hurst(node.pursuer, node.current, node.pursued,node.cols,node.rows,node.grid)
-    
-    if(i%3 == 0):
-        return hurst(node.current, node.pursued, node.pursuer, node.cols,node.rows,node.grid)
-    elif(i%3 == 1):
-        return hurst(node.pursued, node.pursuer, node.current, node.cols,node.rows,node.grid)
-    else:
-        return hurst(node.pursuer, node.current, node.pursued, node.cols,node.rows,node.grid)
-
-            
 def backValue(node: MimiNode):
     if node is None:
         return 0
@@ -235,9 +77,9 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
             nodeVal[newNode] = hurst(newNode, end,avoid,rows,cols,grid) + dist(newNode, end)
             if newNode not in list(pathWeight.keys()):
                 pathWeight[newNode] = pathWeight[node]
-                if 0 <= newNode[0] < rows and 0 <= newNode[1] < cols and grid[newNode[0]][newNode[1]] == 0:
-                    parent[newNode] = node
-                    open.append(newNode)
+                #if 0 <= newNode[0] < rows and 0 <= newNode[1] < cols and grid[newNode[0]][newNode[1]] == 0:
+                parent[newNode] = node
+                open.append(newNode)
             #if newNode == end:
                 #found = True                 
         
