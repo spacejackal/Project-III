@@ -88,8 +88,10 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
     for newNode in open:
         if pathWeight[newNode] <= pathWeight[node]:
             node = newNode
-             
-    return node - newNode
+
+    tupleTemp = tuple((node[0] - newNode[0], node[1]- newNode[1]))
+    npTemp = np.array(tupleTemp)
+    return npTemp
 
 
 def hurst(current, end, pursuer, rows, cols, grid):
