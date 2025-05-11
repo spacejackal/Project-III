@@ -61,7 +61,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
 
     for dir in directions:
         newNode = (node[0] + dir[0], node[1] + dir[1])
-        nodeVal[newNode] = hurst2(newNode, end,avoid,rows,cols,grid) + dist(newNode, end)
+        nodeVal[newNode] = hurst2(newNode, end,avoid,rows,cols,grid) 
         if newNode not in list(pathWeight.keys()):
             pathWeight[newNode] = 0
             parent[newNode] = node
@@ -91,6 +91,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
 
     tupleTemp = tuple([start[0] - node[0], start[1]- node[1]])
     npTemp = np.array(tupleTemp)
+    
     return npTemp
 
 
@@ -108,28 +109,28 @@ def hurst(current, end, pursuer, rows, cols, grid):
 
 def hurst2(current, end, pursuer, rows, cols, grid):
     if tuple(current) == tuple(pursuer) or 0 > current[0] >= rows or 0 > current[1] >= cols or (0 <= current[0] < rows and 0 <= current[1] < cols and grid[current[0]][current[1]] != 0):
-        return 0
+        return -9999999999999999
     temp = abs((current[0] - end[0])^2) + abs((current[1] - end[1])^2)
     temp2 = abs((current[0] - pursuer[0])^2) + abs((current[1] - pursuer[1])^2)
 
-    if temp2 == 0:
-        return 0
+    if temp == 0:
+        return -9999999999999999
 
 
-    return ((1/temp) *temp2)
+    return ((1/temp))
 
 
 class PlannerAgent:
     directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
-    probabiliry = np.array([.3,.3,.3])
-    currentCount = 3
-    directionsMoved = np.array([1,1,1])
-    lastPos = np.array([0,0])
-    lastDir = np.array([0,0])
+    probabiliry = None
+    currentCount = None
+    directionsMoved = None
+    lastPos = None
+    lastDir = None
 
     def updateProb(self, current: np.ndarray):
         self.currentCount += 1
-        actualDir = current - self.lastPos
+        actualDir = self.lastPos - current
         if actualDir[0] == self.lastDir[0] and actualDir[1] == self.lastDir[1]:
             self.directionsMoved[1] += 1
         elif actualDir[0] == -self.lastDir[1] and actualDir[1] == self.lastDir[0]:
@@ -141,7 +142,12 @@ class PlannerAgent:
         self.probabiliry[2] = self.directionsMoved[2] / self.currentCount
     
     def __init__(self):
-        lastPos = np.array([0,0])
+        self.lastPos = np.array([0,0])
+        self.probabiliry = np.array([.3,.3,.3])
+        self.currentCount = 3
+        self.directionsMoved = np.array([1,1,1])
+        self.lastPos = np.array([0,0])
+        self.lastDir = np.array([0,0])
         pass
 
 
@@ -189,7 +195,10 @@ class PlannerAgent:
         #        target = pursued_plan[i]
 
 
-        return AnotherAnotherStar(self, world, temp, temp2, temp3)
+        temp9 = AnotherAnotherStar(self, world, temp, temp2, temp3)
+        self.lastDir = temp9
+        self.lastPos = temp
+        return temp9
 
         act = our_plan[1] - current
 

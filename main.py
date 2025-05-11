@@ -141,7 +141,7 @@ if __name__ == "__main__":
             survivetotal[1] += 1
             if(result[0] == 3):
                 wintotal[0] += 1
-            wintotal[1][1] += 1
+            wintotal[1] += 1
     
     print(pointtotal[0], pointtotal[1])
     print(survivetotal[0], survivetotal[1])
