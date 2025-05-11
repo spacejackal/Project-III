@@ -127,6 +127,7 @@ if __name__ == "__main__":
     # Test all grid tasks with each task tested for 5 times
     pointtotal = [0,0]
     survivetotal = [0,0]
+    wintotal = [0,0]
     
     for id in range(100):
         for running_id in range(5):
@@ -137,7 +138,11 @@ if __name__ == "__main__":
             pointtotal[0] += 3
             if(result[0] > 0):
                 survivetotal[0] += 1
-            survivetotal += 1
+            survivetotal[1] += 1
+            if(result[0] == 3):
+                wintotal[0] += 1
+            wintotal[1] += 1
     
     print(pointtotal[0], pointtotal[1])
     print(survivetotal[0], survivetotal[1])
+    print(wintotal[0], wintotal[1])
