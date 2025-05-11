@@ -89,7 +89,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
         if pathWeight[newNode] <= pathWeight[node]:
             node = newNode
 
-    tupleTemp = tuple([node[0] - newNode[0], node[1]- newNode[1]])
+    tupleTemp = tuple([start[0] - node[0], start[1]- node[1]])
     npTemp = np.array(tupleTemp)
     return npTemp
 
