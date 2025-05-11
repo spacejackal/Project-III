@@ -135,13 +135,13 @@ if __name__ == "__main__":
             result = T.run()
             print (id, running_id, result)
             pointtotal[0] += result[0]
-            pointtotal[0] += 3
+            pointtotal[1] += 3
             if(result[0] > 0):
                 survivetotal[0] += 1
             survivetotal[1] += 1
             if(result[0] == 3):
                 wintotal[0] += 1
-            wintotal[1] += 1
+            wintotal[1][1] += 1
     
     print(pointtotal[0], pointtotal[1])
     print(survivetotal[0], survivetotal[1])

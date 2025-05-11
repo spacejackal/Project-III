@@ -63,7 +63,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
         newNode = (node[0] + dir[0], node[1] + dir[1])
         nodeVal[newNode] = hurst(newNode, end,avoid,rows,cols,grid) + dist(newNode, end)
         if newNode not in list(pathWeight.keys()):
-            pathWeight[newNode] = pathWeight[node]
+            pathWeight[newNode] = 0
             parent[newNode] = node
             open.append(newNode)
         #if newNode == end:
@@ -82,20 +82,20 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
             else:
                 newNode = (node[0] + d[1], node[1] + -d[0])
         
-            pathWeight[nodeToBe] += nodeVal[newNode]*s.probabiliry[i]
+            pathWeight[nodeToBe] += nodeVal[newNode] * s.probabiliry[i]
 
 
     for newNode in open:
         if pathWeight[newNode] <= pathWeight[node]:
             node = newNode
 
-    tupleTemp = tuple((node[0] - newNode[0], node[1]- newNode[1]))
+    tupleTemp = tuple([node[0] - newNode[0], node[1]- newNode[1]])
     npTemp = np.array(tupleTemp)
     return npTemp
 
 
 def hurst(current, end, pursuer, rows, cols, grid):
-    if tuple(current) == tuple(pursuer) or 0 > current[0] >= rows or 0 > current[1] >= cols or (0 <= current[0] < rows and 0 <= current[1] < cols and grid[current[0]][current[1]] == 0):
+    if tuple(current) == tuple(pursuer) or 0 > current[0] >= rows or 0 > current[1] >= cols or (0 <= current[0] < rows and 0 <= current[1] < cols and grid[current[0]][current[1]] != 0):
         return 9999999999999999
     temp = abs((current[0] - end[0])^2) + abs((current[1] - end[1])^2) **0.5
     temp2 = abs((current[0] - pursuer[0])^2) + abs((current[1] - pursuer[1])^2) **0.5
