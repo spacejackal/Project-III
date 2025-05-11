@@ -86,7 +86,7 @@ def AnotherAnotherStar(s, grid, start, end, avoid):
 
 
     for newNode in open:
-        if pathWeight[newNode] >= pathWeight[node]:
+        if pathWeight[newNode] >= pathWeight[node] :
             node = newNode
 
     tupleTemp = tuple([start[0] - node[0], start[1]- node[1]])
@@ -129,7 +129,7 @@ class PlannerAgent:
     lastDir = None
 
     def updateProb(self, current: np.ndarray):
-        self.currentCount += 1
+        #self.currentCount += 1
         actualDir = self.lastPos - current
         if actualDir[0] == self.lastDir[0] and actualDir[1] == self.lastDir[1]:
             self.directionsMoved[1] += 1
@@ -137,6 +137,7 @@ class PlannerAgent:
             self.directionsMoved[0] += 1
         elif actualDir[0] == self.lastDir[1] and actualDir[1] == -self.lastDir[0]:
             self.directionsMoved[2] += 1
+        self.currentCount = self.directionsMoved[0] + self.directionsMoved[1] + self.directionsMoved[2]
         self.probabiliry[0] = self.directionsMoved[0] / self.currentCount
         self.probabiliry[1] = self.directionsMoved[1] / self.currentCount
         self.probabiliry[2] = self.directionsMoved[2] / self.currentCount
@@ -175,24 +176,16 @@ class PlannerAgent:
         
         directions2 = np.array([[0,1],[1,1],[1,0],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]])
 
-        if self.lastDir[0] != 0 or self.lastDir[1] != 0:
-            self.updateProb(current)
 
         target = pursued
 
         temp = tuple(current)
         temp2 = tuple(pursued)
         temp3 = tuple(pursuer)
-        #pursued_plan = AnotherAnotherStar(self, world, temp2, temp3, temp)
 
-        #for i in range(len(pursued_plan)):
-        #    if i == 0:
-        #        continue  
-        #    elif pursued_plan[i] == temp:
-        #        target = pursued_plan[1]
-        #        break
-        #    elif dist(pursued_plan[i], current)<dist(target, current):
-        #        target = pursued_plan[i]
+        if self.lastDir[0] != 0 or self.lastDir[1] != 0:
+            self.updateProb(current)
+
 
 
         temp9 = AnotherAnotherStar(self, world, temp, temp2, temp3)
