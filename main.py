@@ -125,8 +125,19 @@ class Task:
 
 if __name__ == "__main__":
     # Test all grid tasks with each task tested for 5 times
+    pointtotal = [0,0]
+    survivetotal = [0,0]
+    
     for id in range(100):
         for running_id in range(5):
             T = Task(id, running_id)
             result = T.run()
             print (id, running_id, result)
+            pointtotal[0] += result[0]
+            pointtotal[0] += 3
+            if(result[0] > 0):
+                survivetotal[0] += 1
+            survivetotal += 1
+    
+    print(pointtotal[0], pointtotal[1])
+    print(survivetotal[0], survivetotal[1])
